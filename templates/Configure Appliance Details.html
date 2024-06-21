@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>first-second</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/first_secondicon_details.png">
+    <script type="text/javascript" src="/static/js/first-secondjs.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #4763C3;
+            overflow: hidden;
+            display: flex;
+        }
+        nav a:nth-child(2) {
+            background-color: cadetblue; /* 第一个链接背景色为#555 */
+        }
+        nav a {
+            flex: 1;
+            color: white;
+            text-align: center;
+            padding: 14px 0;
+            text-decoration: none;
+            box-sizing: border-box; /* 边框包含在宽度内 */
+            border-right: 1px solid white; /* 添加右边框 */
+            display: flex;
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
+        }
+        nav a:last-child {
+            border-right: none; /* 最后一个链接去掉右边框 */
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+            text-decoration: underline;
+        }
+        nav div {/* 容器样式，用于保持边框一致高度 */
+            border-right: 1px solid white;
+            width: 20%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            position: fixed; /* 固定在底部 */
+            width: 100%; /* 充满整个宽度 */
+            bottom: 0; /* 位于底部 */
+        }
+        
+        .middle{
+            {#border: 1px solid red;#}
+            height: calc(100vh - 69.6px - 39.8px - 5px);{#-5px是为了不贴进底下#}
+            margin: 10px;
+            clear: both;
+        }
+        .firstcon,.secondcon,.thirdcon,.fourthcon{
+            border: 1px solid blueviolet;
+            height: 24%;
+        }
+        .left{
+            border: 1px solid greenyellow;
+            width: 10%;
+            height: 100%;
+            float: left;
+            display: flex;
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+        }
+        .right{
+            border: 1px solid magenta;
+            width: 89%;
+            height: 100%;
+            float: right;
+            overflow-y: auto;
+        }
+        .mrtitler button{
+            background-color: lightblue; /* 设置圆形区域背景颜色 */
+            height: 100%; /* 设置圆形区域高度 */
+            top: 50%;
+            width: 100%;
+        }
+        .mrtitler input{
+            width: 100%;
+        }
+        .button-container {
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            justify-content: center;
+        }
+        .button-container button {
+            font-family: 'times new roman';
+            font-size: math;
+            margin: 5px;
+        }
+        .mode-container {
+            border: 1px solid red;
+            display: flex;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+        .mode-box {
+            border: 1px solid black;
+            margin-left: 4px;
+            width: 100px;
+            text-align: center;
+        }
+        input[type="text"]:focus {
+            outline: none;
+        }
+        input[type="Submit"] {
+            margin: 0px auto;
+            display: block;
+            width: 10%;
+            height: 40px;
+            border: 1px solid;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        input[type="Submit"]:hover {
+            background: #2691d9;
+            color: #e9f4fb;
+            transition: .5s;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'first' %}">Configure Room and Appliances</a>
+        <a>Configure Appliance Details</a>
+        <a href="{% url 'second' %}">Configure Occupants ( Occupancy and Appliances )</a>
+        <a href="{% url 'third' %}">Exhibit appliance-level and aggregate consumption -> User conformation</a>
+        <a href="{% url 'fourth' %}">Generate CSV</a>
+    </nav>
+    
+    <div class="middle">
+        <div class="firstcon">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <div class="secondcon">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <div class="thirdcon">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <div class="fourthcon">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <input name="submit" type="Submit" value="Submit" onclick="sendhref()">
+    </div>
+    <script>
+        var roomVal=decodeURIComponent(window.location.search.substring(2));
+        //document.write(roomVal);
+        var roomAppliancePairs = roomVal.split('&');
+        //for (var i = 0; i < roomAppliancePairs.length; i++){document.write('<br>'+roomAppliancePairs[i]);}
+        var seenroomvalue = [];//var flag;
+        var applianceCount = {}; // 用于跟踪每个 appliance 出现的次数
+        var appliancetothesecond = [];
+        var modeCount=0;
+        roomAppliancePairs.forEach(function(pair) {
+            var keyValue = pair.split('=');
+            var key = keyValue[0];
+            var value = keyValue[1];
+            console.log(key, value);
+            var conid=[document.querySelector('.firstcon .left'),document.querySelector('.secondcon .left'),document.querySelector('.thirdcon .left'),document.querySelector('.fourthcon .left')];
+            var conrd=[document.querySelector('.firstcon .right'),document.querySelector('.secondcon .right'),document.querySelector('.thirdcon .right'),document.querySelector('.fourthcon .right')];
+            if (key === 'room' && seenroomvalue.indexOf(value)===-1){//是房间且没有被记录，这样不会重复
+                seenroomvalue.push(value);
+                conid[seenroomvalue.length-1].innerHTML='<h2>'+value+'</h2>';//flag=1;
+            } else if(key === 'appliance'){
+                appliancetothesecond.push(value);
+                //conrd[seenroomvalue.length-1].innerHTML+='<div style="border:1px solid black; padding:5px;">'+value+'</div>';
+                // 增加或初始化 appliance 的计数
+                if (!applianceCount[value]) {
+                    applianceCount[value] = 1;
+                } else {
+                    applianceCount[value]++;
+                }// 创建一个新的 div 元素
+                var newDiv = document.createElement('div');
+                newDiv.style.border = '1px solid black';
+                newDiv.style.padding = '5px';
+                newDiv.style.marginBottom = '5px'; // 增加底部边距
+                newDiv.style.display = 'flex';
+                newDiv.style.justifyContent = 'space-between';
+                newDiv.style.flexDirection = 'column';
+                // 创建一个包含原始内容的 span 元素
+                var contentSpan = document.createElement('span');
+                contentSpan.textContent = value;
+                // 创建一个包含特定字符的 span 元素
+                var charSpan = document.createElement('span');
+                charSpan.textContent = 'Instance ' + applianceCount[value];
+                charSpan.style.marginLeft = 'auto'; // 将特定字符的 span 元素推到右边
+                // 将两个 span 元素添加到新的 div 中
+                // 将两个 span 元素添加到新的 div 中
+                var topDiv = document.createElement('div');
+                topDiv.style.display = 'flex';
+                topDiv.style.justifyContent = 'space-between';
+                topDiv.style.alignItems = 'center';
+                topDiv.appendChild(contentSpan);
+                topDiv.appendChild(charSpan);
+                newDiv.appendChild(topDiv);
+                {#newDiv.appendChild(contentSpan);#}
+                {#newDiv.appendChild(charSpan);#}
+                var idx=seenroomvalue.length-1;
+                conrd[idx/*seenroomvalue.length-1*/].appendChild(newDiv);
+
+                // 创建按钮容器
+                var buttonContainer = document.createElement('div');
+                buttonContainer.className = 'button-container';
+                buttonContainer.style.display = 'flex';
+                buttonContainer.style.justifyContent = 'center';
+                buttonContainer.style.marginTop = '5px';
+                buttonContainer.style.gap = '5px';
+                // 创建 Add Mode 按钮
+                var addButton = document.createElement('button');
+                addButton.innerHTML = '<span>Add Mode</span>';
+                addButton.onclick = function() { addmode(newDiv); };
+                    //conrd[idx/*seenroomvalue.length-1*/]); };
+                // 创建 Delete Mode 按钮
+                var deleteButton = document.createElement('button');
+                deleteButton.innerHTML = '<span>Delete Mode</span>';
+                deleteButton.onclick = function() { deletemode(newDiv); };
+                    //conrd[idx/*seenroomvalue.length-1*/]); };
+                // 将按钮添加到按钮容器
+                buttonContainer.appendChild(addButton);
+                buttonContainer.appendChild(deleteButton);
+                // 将新的 div 添加到目标元素中
+                newDiv.appendChild(buttonContainer);
+                //conrd[idx/*seenroomvalue.length-1*/].appendChild(buttonContainer);// 将按钮容器添加到新的 div 中
+            }
+        });
+
+        function addmode(container){
+            modeCount++;
+            var modeContainer = document.createElement('div');
+            modeContainer.className = 'mode-container';
+            modeContainer.style.display = 'flex';
+            modeContainer.style.gap = '5px';
+            modeContainer.style.marginTop = '5px';
+            var modeBox = createModeBox(`mode${modeCount}`);
+            var operationModeBox = createInputBox('operation mode');
+            var ratedPowerBox = createInputBox('rated power');
+            var durationBox = createInputBox('duration');
+            modeContainer.appendChild(modeBox);
+            modeContainer.appendChild(operationModeBox);
+            modeContainer.appendChild(ratedPowerBox);
+            modeContainer.appendChild(durationBox);
+            container.insertBefore(modeContainer, container.querySelector('.button-container'));
+            {#var buttonContainer = document.querySelector('.button-container');#}
+            {#buttonContainer.parentNode.insertBefore(modeContainer, buttonContainer);#}
+        }
+        function createInputBox(placeholderText) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = placeholderText;
+            input.size = 30;
+            input.style='margin-left: 10px;text-align: center'
+            return input;
+        }
+        function createModeBox(text) {
+            const box = document.createElement('div');
+            box.className = 'mode-box';
+            box.innerText = text;
+            return box;
+        }
+        function deletemode(container){
+            var containers = container.querySelectorAll('.mode-container');
+            if (containers.length > 0) {
+                var lastContainer = containers[containers.length - 1];
+                lastContainer.parentNode.removeChild(lastContainer);
+            }
+        }
+        function sendhref(){
+            var url="{% url 'second' %}?";
+            for (var i = 0; i < appliancetothesecond.length; i++) {
+                url += "&appliance=" + appliancetothesecond[i];
+            }
+            window.location.href=url;
+        }
+    </script>
+    <footer>
+        2024 &copy; Few-Shot Non-Intrusive Load Monitoring. All rights reserved.
+    </footer>
+</body>
+</html>

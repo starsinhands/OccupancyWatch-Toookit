@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>fourth</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/fourthicon_download.png">
+    <script type="text/javascript" src="/static/js/fourthjs.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #4763C3;
+            overflow: hidden;
+            display: flex;
+        }
+        nav a:nth-child(5) {
+            background-color: cadetblue; /* 第一个链接背景色为#555 */
+        }
+        nav a {
+            flex: 1;
+            color: white;
+            text-align: center;
+            padding: 14px 0;
+            text-decoration: none;
+            box-sizing: border-box; /* 边框包含在宽度内 */
+            border-right: 1px solid white; /* 添加右边框 */
+            display: flex;
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
+        }
+        nav a:last-child {
+            border-right: none; /* 最后一个链接去掉右边框 */
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+            text-decoration: underline;
+        }
+        nav div {/* 容器样式，用于保持边框一致高度 */
+            border-right: 1px solid white;
+            width: 20%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            position: fixed; /* 固定在底部 */
+            width: 100%; /* 充满整个宽度 */
+            bottom: 0; /* 位于底部 */
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'first' %}">Configure Room and Appliances</a>
+        <a href="{% url 'first-second' %}">Configure Appliance Details</a>
+        <a href="{% url 'second' %}">Configure Occupants ( Occupancy and Appliances )</a>
+        <a href="{% url 'third' %}">Exhibit appliance-level and aggregate consumption -> User conformation</a>
+        <a>Generate CSV</a>
+    </nav>
+    请等待下载。。。。。。
+    <footer>
+        2024 &copy; Few-Shot Non-Intrusive Load Monitoring. All rights reserved.
+    </footer>
+</body>
+</html>

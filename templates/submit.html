@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+//**********js文件
+// 假设您有一个id为'myForm'的表单元素  
+const form = document.getElementById('myForm');  
+  
+form.addEventListener('submit', function(event) {  
+  event.preventDefault(); // 阻止表单默认的提交行为  
+  
+  // 收集数据  
+  const rooms = [];  
+  const appliances = {};  
+  const inputTags = form.getElementsByTagName('input');  
+  for (let i = 0; i < inputTags.length; i++) {  
+    if (inputTags[i].type === 'text') {  
+      const roomName = inputTags[i].value;  
+      rooms.push(roomName);  
+  
+      // 假设每个room后面跟着的是对应的appliances的选择框  
+      const applianceSelect = inputTags[i + 1]; // 注意：这里假设每个room后面紧跟一个appliance select  
+      if (applianceSelect && applianceSelect.tagName.toLowerCase() === 'select') {  
+        const classId = applianceSelect.options[applianceSelect.selectedIndex].value;  
+        const type = applianceSelect.options[applianceSelect.selectedIndex].text;  
+        if (!appliances[roomName]) {  
+          appliances[roomName] = [];  
+        }  
+        appliances[roomName].push({ classId, type });  
+      }  
+    }  
+  }  
+  
+  // 发送数据到服务器  
+  fetch('/submit-data', { // 假设您有一个处理提交数据的服务器端路由'/submit-data'  
+    method: 'POST',  
+    headers: {  
+      'Content-Type': 'application/json'  
+    },  
+    body: JSON.stringify({ rooms, appliances })  
+  })  
+  .then(response => response.json())  
+  .then(data => {  
+    if (data.success) {  
+      // 如果服务器返回成功，则跳转到新页面  
+      window.location.href = '/first-second'; // 假设这是新页面的URL  
+    } else {  
+      // 处理错误  
+      console.error('Error submitting form:', data.error);  
+    }  
+  })  
+  .catch(error => {  
+    console.error('Error fetching:', error);  
+  });  
+});
+</body>
+</html>
+
+//script标签里面*******
+document.addEventListener('DOMContentLoaded', function() {  
+    const form = document.getElementById('myForm');  
+    // ... 其余的JavaScript代码 ...  
+});  

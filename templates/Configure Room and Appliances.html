@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>first</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="icon" type="image/x-icon" href="/static/img/firsticon_washingmachine.png">
+    <link rel="stylesheet" type="text/css" href="/static/css/animations.css">{# notice框进入和退出的渐变 #}
+    <link rel="stylesheet" type="text/css" href="/static/css/noticestyle.css">{# notice框颜色和样式 #}
+    <script type="text/javascript" src="/static/js/noticestyle.js"></script>{# 有notice框 #}
+    <script type="text/javascript" src="/static/js/firstjs.js"></script>
+    <script></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #c1cce0;{# 网页的大部分的背景色 #}
+            font-family: 'Jost', sans-serif;
+        }
+        nav {
+            background-color: #4763C3;
+            overflow: hidden;
+            display: flex;
+        }
+        nav a:nth-child(1) {
+            background-color: cadetblue; /* 第一个链接背景色为#555 */
+        }
+        nav a {
+            flex: 1;
+            color: white;
+            text-align: center;
+            padding: 14px 0;
+            text-decoration: none;
+            box-sizing: border-box; /* 边框包含在宽度内 */
+            border-right: 1px solid white; /* 添加右边框 */
+            display: flex;
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
+        }
+        nav a:last-child {
+            border-right: none; /* 最后一个链接去掉右边框 */
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+            text-decoration: underline;
+        }
+        nav div {/* 容器样式，用于保持边框一致高度 */
+            border-right: 1px solid white;
+            width: 20%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            position: fixed; /* 固定在底部 */
+            width: 100%; /* 充满整个宽度 */
+            bottom: 0; /* 位于底部 */
+        }
+
+        {#从这开始是本页面主体部分内容#}
+        h1 {
+            text-align: center;
+            font-size: 48px;
+            margin-top: 10px;
+        }
+        .container {
+            border: 1px solid magenta;
+            width: 800px;
+            margin: 40px auto;
+            padding: 10px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0px 10px 40px 0px rgba(47, 47, 47, .1);
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin: 10px auto;
+            display: block;
+            border-radius: 5px;
+            border: 1px solid lightgrey;
+            width: 90%;
+            color: black;
+        }
+        select{
+            padding: 10px;
+            margin: 10px auto;
+            border-radius: 5px;
+            border: 1px solid lightgrey;
+            width: 40%;
+            color: black;
+            margin: auto 50px;
+        }
+        input[type="text"]:focus {
+            outline: none;
+        }
+        input[type="Submit"] {
+            margin: 10px auto;
+            display: block;
+            width: 40%;
+            height: 40px;
+            border: 1px solid;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        input[type="Submit"]:hover {
+            background: #2691d9;
+            color: #e9f4fb;
+            transition: .5s;
+        }
+        .controls {
+            width: 294px;
+            margin: 15px auto;
+        }
+        .addroom {
+            padding: 5px;
+            border: 1px solid;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .addapp{
+            float: right;
+            padding: 5px;
+            border: 1px solid;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .removeroom {
+            padding: 5px;
+            border: 1px solid;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .removeapp{
+            float: right;
+            padding: 5px;
+            border: 1px solid;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .controls button i {
+            margin-right: 5px;
+        }
+        .removeroom:hover, .addroom:hover, .removeapp:hover, .addapp:hover {
+            background: #2691d9;
+            color: #e9f4fb;
+            transition: .5s;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a>Configure Room and Appliances</a>
+        <a href="{% url 'first-second' %}">Configure Appliance Details</a>
+        <a href="{% url 'second' %}">Configure Occupants ( Occupancy and Appliances )</a>
+        <a href="{% url 'third' %}">Exhibit appliance-level and aggregate consumption -> User conformation</a>
+        <a href="{% url 'fourth' %}">Generate CSV</a>
+    </nav>
+    <div id="overlay">
+        <div id="popup">
+            <p>Notice: You can add some rooms or appliances here.</p>
+            <button id="confirmButton">Confirm</button>
+        </div>
+    </div>
+    {#    从这里开始是主体内容#}
+    <h1>Let's build your home!</h1>
+    <div class="container" style="overflow-y:auto;height:450px;">
+        <form method="get" id="field">
+            <div id="formfield">
+                <input type="text" name="text" class="text" size="50" placeholder="Enter a Room Name, e.g., Kitchen" style="border: 1px solid cadetblue; width: 90%;">
+            </div>
+        </form>
+        <div class="controls">
+            <button class="addroom" onclick="addroom()"><i class="fa fa-plus"></i>Add a room</button>
+            <button class="addapp" onclick="addapp()"><i class="fa fa-plus"></i>Add an appliance</button>
+            <button class="removeroom" onclick="removeroom()"><i class="fa fa-minus"></i>Remove a room</button>
+            <button class="removeapp" onclick="removeapp()"><i class="fa fa-minus"></i>Remove an appliance</button>
+            <input name="submit" type="Submit" value="Submit" onclick="sendhref()">
+        </div>
+    </div>
+    <script>
+        var formfield = document.getElementById('formfield');
+        var selectedOptions = [];
+        var addedrooms=[];
+        function addroom() {
+            var newField = document.createElement('input');
+            newField.setAttribute('type','text');
+            newField.setAttribute('siz', 50);
+            newField.setAttribute('placeholder', 'Enter a Room Name, e.g., Kitchen');
+            newField.style.width = "90%";
+            newField.style.borderColor = "cadetblue";
+            formfield.appendChild(newField);
+            newField.addEventListener('change', function(){
+                var addedroom = this.value;
+                console.log("添加的房间：",addedroom);
+                addedrooms.push(addedroom);
+            })
+        }
+
+        function addapp(){
+            var dropdown1 = document.createElement('select');
+            dropdown1.style.width = "35%";
+            {#dropdown1.style.float = "right";#}
+            dropdown1.innerHTML = '<option label="appliance class" style="display: none;"></option>';
+            {% for class in classes %}
+                dropdown1.innerHTML += '<option value="{{ class.id }}">{{ class.name }}</option>';
+            {% endfor %}
+            formfield.appendChild(dropdown1);
+
+            var dropdown2 = document.createElement('select');
+            dropdown2.style.width = "35%";
+            {#dropdown2.style.float = "right";#}
+            dropdown1.addEventListener('change', function() {
+                dropdown2.innerHTML = '<option label="appliance type" style="display: none;"></option>';
+                var selectedClassId = dropdown1.value;
+                {% for type in types %}
+                    if ("{{ type.appliance_class_id }}" === selectedClassId) {
+                        dropdown2.innerHTML += '<option value="{{ type.id }}">{{ type.name }}</option>';
+                    }
+                {% endfor %}
+            });
+            dropdown2.addEventListener('change', function() {
+                var selectedOption = dropdown2.options[dropdown2.selectedIndex];// 获取选中的选项的值
+                console.log("选中的选项：", selectedOption.text);// 输出选中的选项到控制台
+                selectedOption.room = getRoomName();//对应一下电器的房间
+                selectedOptions.push(selectedOption);// 将选中的选项的值添加到数组中
+            });
+            formfield.appendChild(dropdown2);
+        }
+        function removeroom() {
+            var input_tags = formfield.getElementsByTagName('input');
+            for (var i = input_tags.length - 1; i >= 1; i--) {
+                if (input_tags[i].getAttribute('type') === 'text') {
+                    formfield.removeChild(input_tags[i]);
+                    break;
+                }
+            }
+        }
+        function removeapp(){
+            var dropdowns = formfield.getElementsByTagName('select');
+            var dropdownCount = dropdowns.length;
+            if (dropdownCount >= 3) {
+                formfield.removeChild(dropdowns[dropdownCount - 1]);
+                formfield.removeChild(dropdowns[dropdownCount - 2]);
+            }
+        }
+        function getRoomName(){
+            var input_tags = formfield.getElementsByTagName('input');
+            for (var i = input_tags.length - 1; i >= 0; i--) {
+                if (input_tags[i].getAttribute('type') === 'text') {
+                    return input_tags[i].value;
+                }
+            }
+        }
+        function sendhref(){
+            var objFrm=document.getElementById("field");
+            var textVal =objFrm.querySelector("input[type='text']").value;//这个是第一个输入的房间名
+            addedrooms.unshift(textVal); // 将第一个房间名添加到数组的开头
+            var url="{% url 'first-second' %}?";
+
+            //var dropdown2 = objFrm.querySelectorAll("select")[1];//获取选择的appliance
+            //var selectedOption = dropdown2.options[dropdown2.selectedIndex]; // 获取选中的选项的值
+            //var dropdown2Text = selectedOption.text; // 获取选中的选项的文本内容
+            //url+="&appliance="+dropdown2Text;
+            for (var i = 0; i < selectedOptions.length; i++) {
+                var selectedOption = selectedOptions[i];
+                url += "&room=" + selectedOption.room + "&appliance=" + selectedOption.text;
+                //url += "&appliance=" + selectedOptions[i].text;
+            }
+            //for (var i = 0; i < addedrooms.length; i++) {
+                //url += "&room=" + addedrooms[i];
+            //}
+
+            window.location.href=url;
+        }
+    </script>
+
+    <footer>
+        2024 &copy; Few-Shot Non-Intrusive Load Monitoring. All rights reserved.
+    </footer>
+</body>
+</html>

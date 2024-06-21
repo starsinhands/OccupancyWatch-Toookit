@@ -1,0 +1,28 @@
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+    align-items: center;
+    justify-content: center;
+    animation: fadeInUp 1.5s ease-out forwards; /* 动画效果，1.5秒持续时间，使用 ease-out 缓动函数，forwards 保持最终状态 */
+}
+#popup {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 90px;
+}
+#confirmButton {
+    margin-top: 20px; /* 添加顶部外边距，增加 Notice 和按钮之间的空隙 */
+    padding: 10px 20px;
+    background-color: #4763C3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
